@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Teste de Ficha RPG</title>
+<style>
+    html {
+        background-color: rgb(32, 37, 43);
+        color: whitesmoke;
+        font-family: "poppins";
+    }
+    #ficha {
+        background-color: rgb(48, 48, 48);
+        color: white;
+    }
+</style>
+</head>
+<body>
+
+<h2>Teste de atualização automática da ficha</h2>
+
+<p>Cole a ficha abaixo:</p>
+
+<textarea id="ficha" rows="20" cols="80">[VIDAVALUE] HP 86/150
+[FOMEVALUE] Fome: 95
+[FOMETURNO] 0/5
+[SEDEVALUE] Sede: 83
+[SEDETURNO] 0/4
+</textarea>
+
+<br><br>
+
+<button onclick="passarTurno()">Passar 1 turno</button>
+
+<script>
+
+function processarStatus(
+    linhas,
+    tagValor,
+    tagTurno,
+    nomeStatus,
+    mudancaPorCiclo
+) {
+
+    let indiceValor = -1;
+
+    // procura a linha do valor
+    for (let i = 0; i < linhas.length; i++) {
+        if (linhas[i].startsWith(tagValor)) {
+            indiceValor = i;
+            break;
+        }
+    }
+
+    // procura e processa o contador
+    for (let i = 0; i < linhas.length; i++) {
+
+        if (linhas[i].startsWith(tagTurno)) {
+
+            let numeros = linhas[i].match(/\d+/g);
+
+            let turnoAtual = Number(numeros[0]);
+            let turnoMax = Number(numeros[1]);
+
+            turnoAtual++;
+
+            if (turnoAtual >= turnoMax) {
+
+                let valorAtual = Number(
+                    linhas[indiceValor].match(/\d+/)[0]
+                );
+
+                valorAtual += mudancaPorCiclo;
+
+                linhas[indiceValor] =
+                    `${tagValor} ${nomeStatus}: ${valorAtual}/100`;
+
+                turnoAtual = 0;
+            }
+
+            linhas[i] =
+                `${tagTurno} ${turnoAtual}/${turnoMax}`;
+        }
+    }
+}
+
+function processarEfeito(
+    linhas,
+    tagEfeito,
+    tagValor,
+    nomeValor,
+    modificador
+) {
+
+    let indiceValor = -1;
+    let indiceEfeito = -1;
+
+    // procura as linhas importantes
+    for (let i = 0; i < linhas.length; i++) {
+
+        if (linhas[i].startsWith(tagValor)) {
+            indiceValor = i;
+        }
+
+        if (linhas[i].startsWith(tagEfeito)) {
+            indiceEfeito = i;
+        }
+    }
+
+    // se não existir o efeito, sai da função
+    if (indiceEfeito === -1) {
+        return;
+    }
+
+    // pega os turnos restantes do efeito
+    let turnos = Number(
+        linhas[indiceEfeito].match(/\d+/)[0]
+    );
+
+    // pega o valor atual
+    let numerosValor =
+        linhas[indiceValor].match(/\d+/g);
+
+    let valorAtual = Number(numerosValor[0]);
+
+    // se existir valor máximo
+    let valorMax =
+        numerosValor.length > 1
+        ? Number(numerosValor[1])
+        : null;
+
+    // aplica efeito
+    valorAtual += modificador;
+
+    // impede passar do máximo
+    if (valorMax !== null) {
+        valorAtual = Math.min(valorAtual, valorMax);
+    }
+
+    // atualiza linha
+    if (valorMax !== null) {
+        linhas[indiceValor] =
+            `${tagValor} ${nomeValor}: ${valorAtual}/${valorMax}`;
+    }
+    else {
+        linhas[indiceValor] =
+            `${tagValor} ${nomeValor}: ${valorAtual}`;
+    }
+
+    // diminui duração
+    turnos--;
+
+    if (turnos <= 0) {
+        linhas.splice(indiceEfeito, 1);
+    }
+    else {
+        linhas[indiceEfeito] =
+            `${tagEfeito} ${turnos}`;
+    }
+}
+
+function passarTurno() {
+
+    let texto = document.getElementById("ficha").value;
+
+    let linhas = texto.split("\n");
+
+    processarStatus(
+        linhas,
+        "[FOMEVALUE]",
+        "[FOMETURNO]",
+        "Fome",
+        -1
+    );
+
+    processarStatus(
+        linhas,
+        "[SEDEVALUE]",
+        "[SEDETURNO]",
+        "Sede",
+        -1
+    );
+    processarStatus(
+        linhas,
+        "[CHOQUEVALUE]",
+        "[CHOQUETURNO]",
+        "Choque",
+        -1
+    );
+    processarEfeito(
+    linhas,
+    "[CURA]",
+    "[VIDAVALUE]",
+    "HP",
+    +5
+    );
+
+    document.getElementById("ficha").value =
+        linhas.join("\n");
+}
+
+</script>
+
+</body>
+</html>
