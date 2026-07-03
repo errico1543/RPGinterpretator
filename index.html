@@ -31,7 +31,8 @@
 <br><br>
 
 <button onclick="passarTurno()">Passar 1 turno</button>
-
+<button onclick="comer()">Consumir Fome</button>
+<button onclick="beber()">Consumir Sede</button>
 <script>
 
 function processarStatus(
@@ -193,6 +194,71 @@ function passarTurno() {
     "[VIDAVALUE]",
     "HP",
     +5
+    );
+
+    document.getElementById("ficha").value =
+        linhas.join("\n");
+}
+
+function alterarStatus(linhas, tagValor, quantidade) {
+
+    for (let i = 0; i < linhas.length; i++) {
+
+        if (linhas[i].startsWith(tagValor)) {
+
+            let numeros = linhas[i].match(/\d+/g);
+
+            let valorAtual = Number(numeros[0]);
+
+            let valorMax = numeros.length > 1
+                ? Number(numeros[1])
+                : 100;
+
+            valorAtual += quantidade;
+
+            valorAtual = Math.max(0, valorAtual);
+            valorAtual = Math.min(valorAtual, valorMax);
+
+            let nomeStatus =
+                linhas[i]
+                .replace(tagValor, "")
+                .split(":")[0]
+                .trim();
+
+            linhas[i] =
+                `${tagValor} ${nomeStatus}: ${valorAtual}/${valorMax}`;
+
+            break;
+        }
+    }
+}
+
+function comer() {
+
+    let texto = document.getElementById("ficha").value;
+
+    let linhas = texto.split("\n");
+
+    alterarStatus(
+        linhas,
+        "[FOMEVALUE]",
+        -1
+    );
+
+    document.getElementById("ficha").value =
+        linhas.join("\n");
+}
+
+function beber() {
+    
+    let texto = document.getElementById("ficha").value;
+
+    let linhas = texto.split("\n");
+
+    alterarStatus(
+        linhas,
+        "[SEDEVALUE]",
+        -1
     );
 
     document.getElementById("ficha").value =
