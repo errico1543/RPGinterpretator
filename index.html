@@ -67,14 +67,22 @@ function processarStatus(
 
             if (turnoAtual >= turnoMax) {
 
-                let valorAtual = Number(
-                    linhas[indiceValor].match(/\d+/)[0]
-                );
+                let numerosValor = linhas[indiceValor].match(/\d+/g);
 
-                valorAtual += mudancaPorCiclo;
+                let valorAtual = Number(numerosValor[0]);
+                let valorMax = Number(numerosValor[1]);
+
+                // terceiro número = consumo por ciclo
+                let consumo = numerosValor.length >= 3
+                    ? Number(numerosValor[2])
+                    : Math.abs(mudancaPorCiclo);
+
+                valorAtual -= consumo;
+
+                valorAtual = Math.max(0, Math.min(valorAtual, valorMax));
 
                 linhas[indiceValor] =
-                    `${tagValor} ${nomeStatus}: ${valorAtual}/100`;
+                    `${tagValor} ${nomeStatus}: ${valorAtual}/${valorMax} ${consumo}`;
 
                 turnoAtual = 0;
             }
