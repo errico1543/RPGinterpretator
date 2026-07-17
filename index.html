@@ -33,6 +33,7 @@
 <button onclick="passarTurno()">Passar 1 turno</button>
 <button onclick="comer()">Consumir Fome</button>
 <button onclick="beber()">Consumir Sede</button>
+<button onclick="exportarFichaTXT()">Exportar Ficha (.txt)</button>
 <script>
 
 function processarStatus(
@@ -278,6 +279,25 @@ function beber() {
 
     document.getElementById("ficha").value =
         linhas.join("\n");
+}
+
+function exportarFichaTXT() {
+
+    let texto = document.getElementById("ficha").value;
+
+    let blob = new Blob([texto], {
+        type: "text/plain"
+    });
+
+    let link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+
+    link.download = "Ficha.txt";
+
+    link.click();
+
+    URL.revokeObjectURL(link.href);
 }
 
 </script>
