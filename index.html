@@ -98,7 +98,7 @@ function processarEfeito(
     tagEfeito,
     tagValor,
     nomeValor,
-    modificador
+    multiplicador
 ) {
 
     let indiceValor = -1;
@@ -116,47 +116,37 @@ function processarEfeito(
         }
     }
 
-    // se não existir o efeito, sai da função
-    if (indiceEfeito === -1) {
+    if (indiceValor === -1 || indiceEfeito === -1) {
         return;
     }
 
-    // pega os turnos restantes do efeito
-    let turnos = Number(
-        linhas[indiceEfeito].match(/\d+/)[0]
-    );
+    // [CURA] 5 3
+    //        ^ ^
+    //      valor turnos
 
-    // pega o valor atual
-    let numerosValor =
-        linhas[indiceValor].match(/\d+/g);
+    let numerosEfeito = linhas[indiceEfeito].match(/\d+/g);
+
+    let valorEfeito = Number(numerosEfeito[0]);
+    let turnos = Number(numerosEfeito[1]);
+
+    let numerosValor = linhas[indiceValor].match(/\d+/g);
 
     let valorAtual = Number(numerosValor[0]);
+    let valorMax = Number(numerosValor[1]);
 
-    // se existir valor máximo
-    let valorMax =
-        numerosValor.length > 1
-        ? Number(numerosValor[1])
-        : null;
+    if (tipo === "porcentagem") {
+    valor -= Math.ceil(valor * (alteracao / 100));
+} else {
+    valor += alteracao;
+}
 
-    // aplica efeito
-    valorAtual += modificador;
+    valorAtual += valorEfeito * multiplicador;
 
-    // impede passar do máximo
-    if (valorMax !== null) {
-        valorAtual = Math.min(valorAtual, valorMax);
-    }
+    valorAtual = Math.max(0, Math.min(valorAtual, valorMax));
 
-    // atualiza linha
-    if (valorMax !== null) {
-        linhas[indiceValor] =
-            `${tagValor} ${nomeValor}: ${valorAtual}/${valorMax}`;
-    }
-    else {
-        linhas[indiceValor] =
-            `${tagValor} ${nomeValor}: ${valorAtual}`;
-    }
+    linhas[indiceValor] =
+        `${tagValor} ${nomeValor}: ${valorAtual}/${valorMax}`;
 
-    // diminui duração
     turnos--;
 
     if (turnos <= 0) {
@@ -164,8 +154,9 @@ function processarEfeito(
     }
     else {
         linhas[indiceEfeito] =
-            `${tagEfeito} ${turnos}`;
+            `${tagEfeito} ${valorEfeito} ${turnos}`;
     }
+
 }
 
 function passarTurno() {
@@ -201,8 +192,24 @@ function passarTurno() {
     "[CURA]",
     "[VIDAVALUE]",
     "HP",
-    +5
-    );
+    +1
+);
+
+processarEfeito(
+    linhas,
+    "[VENENO]",
+    "[VIDAVALUE]",
+    "HP",
+    -1
+);
+/* processarEfeito(
+    linhas,
+    "[SANGRAMENTO]",
+    "[VIDAVALUE]",
+    "HP",
+    -1
+    "porcentagem"
+); */
 
     document.getElementById("ficha").value =
         linhas.join("\n");
