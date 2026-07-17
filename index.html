@@ -9,19 +9,45 @@
         color: whitesmoke;
         font-family: "poppins";
     }
+    .other {
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+    }
     #ficha {
+        width: 80%;
+        max-width: 1000px;
         background-color: rgb(48, 48, 48);
         color: white;
+        font-size: 18px;
+    }
+    #tudocentralizado {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .Buton {
+        width: 80%;
+        max-width: 300px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 30px;
+        font-size: 24px;
     }
 </style>
 </head>
 <body>
 
-<h2>atualização automática de ficha</h2>
+<h2 class="other">atualização automática de ficha</h2>
 
-<p>Cole a ficha abaixo:</p>
-
-<textarea id="ficha" rows="20" cols="80">[VIDAVALUE] HP 86/150
+<p class="other">Cole a ficha abaixo:</p>
+ <div id="tudocentralizado">
+<textarea class="centralizado" id="ficha" rows="20">[VIDAVALUE] HP 86/150
 [FOMEVALUE] Fome: 95
 [FOMETURNO] 0/5
 [SEDEVALUE] Sede: 83
@@ -30,10 +56,11 @@
 
 <br><br>
 
-<button onclick="passarTurno()">Passar 1 turno</button>
-<button onclick="comer()">Consumir Fome</button>
-<button onclick="beber()">Consumir Sede</button>
-<button onclick="exportarFichaTXT()">Exportar Ficha (.txt)</button>
+<button class="Buton" onclick="passarTurno()">Passar 1 turno</button>
+<button class="Buton" onclick="comer()">Consumir Fome</button>
+<button class="Buton" onclick="beber()">Consumir Sede</button>
+<button class="Buton" onclick="exportarFichaTXT()">Exportar Ficha (.txt)</button>
+</div>
 <script>
 
 function processarStatus(
