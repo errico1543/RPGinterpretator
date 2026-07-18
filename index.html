@@ -69,11 +69,7 @@
 
 <p class="other">Cole a ficha abaixo:</p>
  <div id="tudocentralizado">
-<textarea class="centralizado" id="ficha" rows="20">[VIDAVALUE] HP 86/150
-[FOMEVALUE] Fome: 95
-[FOMETURNO] 0/5
-[SEDEVALUE] Sede: 83
-[SEDETURNO] 0/4
+<textarea class="centralizado" id="ficha" rows="20">
 </textarea>
 
 <br><br>
@@ -81,7 +77,15 @@
 <button class="Buton" onclick="passarTurno()">Passar 1 turno</button>
 <button class="Buton" onclick="comer()">Consumir Fome</button>
 <button class="Buton" onclick="beber()">Consumir Sede</button>
-<button class="Buton" onclick="exportarFichaTXT()">Exportar Ficha (.txt)</button>
+<button class="Buton" onclick="exportarFichaRPG()">Exportar Ficha (.rpg)</button>
+<button class="Buton" onclick="document.getElementById('arquivo').click()"> Importar (.rpg)</button>
+
+<input 
+    type="file"
+    id="arquivo"
+    accept=".rpg"
+    style="display: none"
+    onchange="importarFicha(event)">
 </div>
 <script>
 
@@ -330,25 +334,48 @@ function beber() {
         linhas.join("\n");
 }
 
-function exportarFichaTXT() {
+function exportarFichaRPG(){
 
     let texto = document.getElementById("ficha").value;
 
+    const nome = prompt("Nome do personagem:");
+
+    if (nome === null) return;
+
     let blob = new Blob([texto], {
-        type: "text/plain"
+        type: "text/plain;charset=utf-8"
     });
 
     let link = document.createElement("a");
 
     link.href = URL.createObjectURL(blob);
 
-    link.download = "Ficha.txt";
+    link.download = `${nome || "Personagem"}.rpg`;
 
     link.click();
 
     URL.revokeObjectURL(link.href);
+
 }
 
+function importarFicha(event){
+
+    const arquivo = event.target.files[0];
+
+    if(!arquivo) return;
+
+    const leitor = new FileReader();
+
+    leitor.onload = function(e){
+
+        document.getElementById("ficha").value =
+            e.target.result;
+
+    };
+
+    leitor.readAsText(arquivo, "UTF-8");
+
+}
 </script>
 
 </body>
