@@ -135,6 +135,8 @@ Este acima determina em quantos turnos sua fome irá decair
 Observação: o "1" após os valores de sede é o indice no qual sua sede desce, numero que pode mudar conforme seu personagem
 [SEDETURNO] 0/4
 Este acima determina em quantos turnos sua sede irá decair
+[MANAVALUE] Mana: 100/100 -1
+[MANATURNO] 0/5
 
         Como eu importo e exporto uma ficha?
 
@@ -196,7 +198,11 @@ function processarStatus(
                     ? Number(numerosValor[2])
                     : Math.abs(mudancaPorCiclo);
 
-                valorAtual -= consumo;
+                if (mudancaPorCiclo > 0) {
+                    valorAtual += consumo;
+                } else {
+                    valorAtual -= consumo;
+                }
 
                 valorAtual = Math.max(0, Math.min(valorAtual, valorMax));
 
@@ -305,6 +311,13 @@ function passarTurno() {
         "[CHOQUETURNO]",
         "Choque",
         -1
+    );
+    processarStatus(
+        linhas,
+        "[MANAVALUE]",
+        "[MANATURNO]",
+        "Mana",
+        1
     );
     processarEfeito(
     linhas,
