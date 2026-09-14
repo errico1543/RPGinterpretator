@@ -61,6 +61,12 @@
             font-size: 16px;
         }
     }
+    #res {
+        white-space: pre-line;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+    }
 </style>
 </head>
 <body>
@@ -86,8 +92,53 @@
     accept=".rpg"
     style="display: none"
     onchange="importarFicha(event)">
+
+
+<input type="checkbox" id="tutorialcheck">
+<label for="tutorialcheck">Tutorial</label>
+</div>
+<div id="res">
+
 </div>
 <script>
+const checkbox = document.getElementById("tutorialcheck");
+const res = document.getElementById("res")
+const tutorialtext = `
+Como faço o interpretador interpretar minha ficha?
+
+é simples, Basta indentificar seus marcadores de HP, Fome e Sede, e antes de cada um deles escrever uma tag
+Sua ficha deve ficar assim:
+
+NÃO copie as observações abaixo para dentro da ficha.
+As observações servem apenas para explicar o que cada número significa.
+
+[VIDAVALUE] HP 100/100
+[FOMEVALUE] Fome 100/100 1
+Observação: o "1" após os valores de fome é o indice no qual sua fome desce, numero cujo qual pode mudar conforme seu personagem
+[FOMETURNO] 0/5
+Este acima determina em quantos turnos sua fome irá decair
+[SEDEVALUE] Sede 100/100 1
+Observação: o "1" após os valores de sede é o indice no qual sua sede desce, numero que pode mudar conforme seu personagem
+[SEDETURNO] 0/4
+Este acima determina em quantos turnos sua sede irá decair
+
+        Como eu importo e exporto uma ficha?
+
+        Basta utilizar os botões Importar e Exportar
+        Importar: Basta escolher o arquivo do seu personagem (.rpg)
+        Exportar: Basta escrever o nome de seu personagem e o sistema exportará para seu celular um arquivo no formato .rpg, você só pode
+        acessa-lo neste site, e não se preocupe, estes arquivos são minúsculos, quando quiser importa-los basta utilizar o botão Importar`
+
+checkbox.addEventListener('change', (event) => {
+    if (event.target.checked) {
+        res.innerHTML = tutorialtext;
+        console.log("😎👍👍")
+    } else {
+        res.textContent = "o carai💥";
+        console.log("FAAAAAAHHH");
+    }
+})
+
 
 function processarStatus(
     linhas,
