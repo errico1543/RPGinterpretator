@@ -345,6 +345,8 @@ processarEfeito(
 
     document.getElementById("ficha").value =
         linhas.join("\n");
+
+        salvarFicha();
 }
 
 function alterarStatus(linhas, tagValor, quantidade) {
@@ -374,7 +376,7 @@ function alterarStatus(linhas, tagValor, quantidade) {
 
             linhas[i] =
                 `${tagValor} ${nomeStatus}: ${valorAtual}/${valorMax}`;
-
+            salvarFicha();
             break;
         }
     }
@@ -394,6 +396,7 @@ function comer() {
 
     document.getElementById("ficha").value =
         linhas.join("\n");
+        salvarFicha();
 }
 
 function beber() {
@@ -410,6 +413,7 @@ function beber() {
 
     document.getElementById("ficha").value =
         linhas.join("\n");
+        salvarFicha();
 }
 
 function exportarFichaRPG(){
@@ -433,7 +437,7 @@ function exportarFichaRPG(){
     link.click();
 
     URL.revokeObjectURL(link.href);
-
+salvarFicha();
 }
 
 function importarFicha(event){
@@ -452,8 +456,24 @@ function importarFicha(event){
     };
 
     leitor.readAsText(arquivo, "UTF-8");
-
+salvarFicha();
 }
+
+
+function salvarFicha() {
+    localStorage.setItem(
+        "fichaRPG",
+        document.getElementById("ficha").value
+    );
+}
+window.addEventListener("DOMContentLoaded", () => {
+    const ficha = document.getElementById("ficha");
+    const fichaSalva = localStorage.getItem("fichaRPG");
+
+    if (fichaSalva !== null) {
+        ficha.value = fichaSalva;
+    }
+});
 </script>
 
 </body>
