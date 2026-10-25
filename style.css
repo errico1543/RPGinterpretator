@@ -1,0 +1,71 @@
+    html {
+        background-color: rgb(32, 37, 43);
+        color: whitesmoke;
+        font-family: "poppins";
+    }
+    .other {
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+    }
+    #ficha {
+        width: 80%;
+        max-width: 1000px;
+        background-color: rgb(48, 48, 48);
+        color: white;
+        font-size: 18px;
+    }
+    #tudocentralizado {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .Buton {
+        width: 80%;
+        max-width: 300px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 30px;
+        font-size: 24px;
+        border-radius: 20px;
+        background-color: rgb(48, 48, 48);
+        color: white;
+    }
+    @media (max-width: 1000px) {
+        .Buton {
+            color: white;
+            width: 300px;
+            height: 50px;
+            font-size: 30px;
+        }
+        #ficha {
+            width: 90%;
+            height: 300px;
+            font-size: 16px;
+        }
+    }
+    #res {
+        white-space: pre-line;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+    }
+    #ficha {
+        line-height: 24px;
+        background-color: rgb(253, 219, 177);
+        color: black;
+        background-image: repeating-linear-gradient(
+            to bottom,
+            transparent 0px,
+            transparent 23px,
+            #333333 24px
+        );
+        background-attachment: local;
+
+        padding: 4px 8px;
+    }
