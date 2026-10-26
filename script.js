@@ -44,12 +44,13 @@ function processarStatus(
     tagValor,
     tagTurno,
     nomeStatus,
-    mudancaPorCiclo
+    mudancaPorCiclo,
+    aoCompletarCiclo = null
 ) {
 
     let indiceValor = -1;
 
-    // procura a linha do valor
+    // Procura a linha do valor
     for (let i = 0; i < linhas.length; i++) {
         if (linhas[i].startsWith(tagValor)) {
             indiceValor = i;
@@ -57,47 +58,75 @@ function processarStatus(
         }
     }
 
-    // procura e processa o contador
+    // Sem a linha do status, não há o que processar
+    if (indiceValor === -1) {
+        return;
+    }
+
+    // Procura e processa o contador
     for (let i = 0; i < linhas.length; i++) {
 
-        if (linhas[i].startsWith(tagTurno)) {
+        if (!linhas[i].startsWith(tagTurno)) {
+            continue;
+        }
 
-            let numeros = linhas[i].match(/\d+/g);
+        let numeros = linhas[i].match(/\d+/g);
 
-            let turnoAtual = Number(numeros[0]);
-            let turnoMax = Number(numeros[1]);
+        if (!numeros || numeros.length < 2) {
+            continue;
+        }
 
-            turnoAtual++;
+        let turnoAtual = Number(numeros[0]);
+        let turnoMax = Number(numeros[1]);
 
-            if (turnoAtual >= turnoMax) {
+        // Evita ciclos inválidos
+        if (turnoMax <= 0) {
+            continue;
+        }
 
-                let numerosValor = linhas[indiceValor].match(/\d+/g);
+        turnoAtual++;
 
-                let valorAtual = Number(numerosValor[0]);
-                let valorMax = Number(numerosValor[1]);
+        if (turnoAtual >= turnoMax) {
 
-                // terceiro número = consumo por ciclo
-                let consumo = numerosValor.length >= 3
-                    ? Number(numerosValor[2])
-                    : Math.abs(mudancaPorCiclo);
+            let numerosValor = linhas[indiceValor].match(/\d+/g);
 
-                if (mudancaPorCiclo > 0) {
-                    valorAtual += consumo;
-                } else {
-                    valorAtual -= consumo;
-                }
-
-                valorAtual = Math.max(0, Math.min(valorAtual, valorMax));
-
-                linhas[indiceValor] =
-                    `${tagValor} ${nomeStatus}: ${valorAtual}/${valorMax} ${consumo}`;
-
-                turnoAtual = 0;
+            if (!numerosValor || numerosValor.length < 2) {
+                continue;
             }
 
-            linhas[i] =
-                `${tagTurno} ${turnoAtual}/${turnoMax}`;
+            let valorAtual = Number(numerosValor[0]);
+            let valorMax = Number(numerosValor[1]);
+
+            // Terceiro número = mudança por ciclo
+            let quantidade = numerosValor.length >= 3
+                ? Number(numerosValor[2])
+                : Math.abs(mudancaPorCiclo);
+
+            if (mudancaPorCiclo > 0) {
+                valorAtual += quantidade;
+            } else {
+                valorAtual -= quantidade;
+            }
+
+            valorAtual = Math.max(
+                0,
+                Math.min(valorAtual, valorMax)
+            );
+
+            linhas[indiceValor] =
+                `${tagValor} ${nomeStatus}: ${valorAtual}/${valorMax} ${quantidade}`;
+
+            turnoAtual = 0;
+
+            // Executa uma ação opcional quando o ciclo termina
+            if (aoCompletarCiclo !== null) {
+                aoCompletarCiclo(linhas);
+            }
         }
+
+        linhas[i] = `${tagTurno} ${turnoAtual}/${turnoMax}`;
+
+        break;
     }
 }
 
@@ -173,6 +202,16 @@ function passarTurno() {
 
     let linhas = texto.split("\n");
 
+    // Regeneração natural: +1 HP a cada 5 turnos
+    processarStatus(
+        linhas,
+        "[VIDAVALUE]",
+        "[VIDATURNO]",
+        "HP",
+        1
+    );
+
+    // Fome: diminui conforme seu próprio ciclo
     processarStatus(
         linhas,
         "[FOMEVALUE]",
@@ -181,20 +220,24 @@ function passarTurno() {
         -1
     );
 
+    // Sede: diminui conforme seu ciclo.
+    // Quando o ciclo termina, o Choque também diminui em 1.
     processarStatus(
         linhas,
         "[SEDEVALUE]",
         "[SEDETURNO]",
         "Sede",
-        -1
+        -1,
+        function(linhas) {
+            alterarStatus(
+                linhas,
+                "[CHOQUEVALUE]",
+                -1
+            );
+        }
     );
-    processarStatus(
-        linhas,
-        "[CHOQUEVALUE]",
-        "[CHOQUETURNO]",
-        "Choque",
-        -1
-    );
+
+    // Mana: recupera conforme seu próprio ciclo
     processarStatus(
         linhas,
         "[MANAVALUE]",
@@ -202,34 +245,30 @@ function passarTurno() {
         "Mana",
         1
     );
+
+    // Cura temporária
     processarEfeito(
-    linhas,
-    "[CURA]",
-    "[VIDAVALUE]",
-    "HP",
-    +1
-);
+        linhas,
+        "[CURA]",
+        "[VIDAVALUE]",
+        "HP",
+        1
+    );
 
-processarEfeito(
-    linhas,
-    "[VENENO]",
-    "[VIDAVALUE]",
-    "HP",
-    -1
-);
-/* processarEfeito(
-    linhas,
-    "[SANGRAMENTO]",
-    "[VIDAVALUE]",
-    "HP",
-    -1
-    "porcentagem"
-); */
+    // Veneno
+    processarEfeito(
+        linhas,
+        "[VENENO]",
+        "[VIDAVALUE]",
+        "HP",
+        -1
+    );
 
+    // Atualiza a ficha
     document.getElementById("ficha").value =
         linhas.join("\n");
 
-        salvarFicha();
+    salvarFicha();
 }
 
 function alterarStatus(linhas, tagValor, quantidade) {
