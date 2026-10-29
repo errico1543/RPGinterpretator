@@ -338,6 +338,27 @@ function beber() {
         salvarFicha();
 }
 
+function executarVezes(inputId, funcao) {
+    const input = document.getElementById(inputId);
+
+    // Campo vazio = executar uma vez
+    const quantidade = input.value.trim() === ""
+        ? 1
+        : Number(input.value);
+
+    // Impede valores inválidos
+    if (!Number.isInteger(quantidade) || quantidade < 0) {
+        alert("Digite um número inteiro igual ou maior que zero!");
+        return;
+    }
+
+    for (let i = 0; i < quantidade; i++) {
+        funcao();
+    }
+}
+
+
+
 function exportarFichaRPG(){
 
     let texto = document.getElementById("ficha").value;

@@ -21,10 +21,34 @@
 
 <br><br>
 
-<button class="Buton" onclick="passarTurno()">Passar 1 turno</button>
-<button class="Buton" onclick="passarTurno(), comer(), beber()">PASSAR 1 QUILÔMETRO</button>
-<button class="Buton" onclick="comer()">Consumir Fome</button>
-<button class="Buton" onclick="beber()">Consumir Sede</button>
+<button class="Buton"
+    onclick="executarVezes('passarturnovezes', passarTurno)">
+    Passar turnos
+</button>
+<input type="number" id="passarturnovezes"
+    placeholder="Quantos turnos?">
+<button class="Buton"
+    onclick="executarVezes('passarquilometrovezes', () => {
+        passarTurno();
+        comer();
+        beber();
+    })">
+    PASSAR QUILÔMETROS
+</button>
+<input type="number" id="passarquilometrovezes"
+    placeholder="Quantos quilômetros?">
+<button class="Buton"
+    onclick="executarVezes('fomevezes', comer)">
+    Consumir Fome
+</button>
+<input type="number" id="fomevezes"
+    placeholder="Consumir quantas unidades?">
+<button class="Buton"
+    onclick="executarVezes('sedevezes', beber)">
+    Consumir Sede
+</button>
+<input type="number" id="sedevezes"
+    placeholder="Consumir quantas unidades?">
 <button class="Buton" onclick="exportarFichaRPG()">Exportar Ficha (.rpg)</button>
 <button class="Buton" onclick="document.getElementById('arquivo').click()"> Importar (.rpg)</button>
 
