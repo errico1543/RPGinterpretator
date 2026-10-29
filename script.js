@@ -279,30 +279,30 @@ function alterarStatus(linhas, tagValor, quantidade) {
 
             let numeros = linhas[i].match(/\d+/g);
 
-            let valorAtual = Number(numeros[0]);
+            if (!numeros || numeros.length < 2) {
+                break;
+            }
 
-            let valorMax = numeros.length > 1
-                ? Number(numeros[1])
-                : 100;
+            let valorAtual = Number(numeros[0]);
+            let valorMax = Number(numeros[1]);
 
             valorAtual += quantidade;
 
             valorAtual = Math.max(0, valorAtual);
             valorAtual = Math.min(valorAtual, valorMax);
 
-            let nomeStatus =
-                linhas[i]
-                .replace(tagValor, "")
-                .split(":")[0]
-                .trim();
+            // Altera somente o valor atual, preservando o restante da linha.
+            linhas[i] = linhas[i].replace(
+                /(\d+)(?=\s*\/)/,
+                String(valorAtual)
+            );
 
-            linhas[i] =
-                `${tagValor} ${nomeStatus}: ${valorAtual}/${valorMax}`;
             salvarFicha();
             break;
         }
     }
 }
+
 
 function comer() {
 
