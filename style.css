@@ -1,3 +1,6 @@
+    @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+    
+    
     html {
         background-color: rgb(32, 37, 43);
         color: whitesmoke;
@@ -14,6 +17,9 @@
         background-color: rgb(48, 48, 48);
         color: white;
         font-size: 18px;
+        font-family: "IM Fell English", serif;
+        font-weight: 600;
+
     }
     #tudocentralizado {
         display: flex;
@@ -57,12 +63,12 @@
     }
     #ficha {
         line-height: 24px;
-        background-color: rgb(253, 219, 177);
+        background-color: rgb(225, 194, 156);
         color: black;
         background-image: repeating-linear-gradient(
             to bottom,
             transparent 0px,
-            transparent 23px,
+            transparent 22px,
             #333333 24px
         );
         background-attachment: local;
